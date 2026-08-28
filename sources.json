@@ -1,0 +1,238 @@
+{
+  "$comment": "購読するフィードの定義。ここを編集するだけでソースを増減できます。category は overseas / japan / spec の3種。weight はスコア順表示のときの下駄（1.0が標準）。",
+  "sources": [
+    {
+      "id": "css-tricks",
+      "name": "CSS-Tricks",
+      "url": "https://css-tricks.com/feed/",
+      "category": "overseas",
+      "lang": "en",
+      "weight": 1.1
+    },
+    {
+      "id": "smashing",
+      "name": "Smashing Magazine",
+      "url": "https://www.smashingmagazine.com/feed/",
+      "category": "overseas",
+      "lang": "en",
+      "weight": 1.0
+    },
+    {
+      "id": "webdev",
+      "name": "web.dev",
+      "url": "https://web.dev/static/blog/feed.xml",
+      "category": "overseas",
+      "lang": "en",
+      "weight": 1.2
+    },
+    {
+      "id": "chrome-dev",
+      "name": "Chrome for Developers",
+      "url": "https://developer.chrome.com/static/blog/feed.xml",
+      "category": "overseas",
+      "lang": "en",
+      "weight": 1.1
+    },
+    {
+      "id": "mdn-blog",
+      "name": "MDN Blog",
+      "url": "https://developer.mozilla.org/en-US/blog/rss.xml",
+      "category": "overseas",
+      "lang": "en",
+      "weight": 1.1
+    },
+    {
+      "id": "joshwcomeau",
+      "name": "Josh W. Comeau",
+      "url": "https://www.joshwcomeau.com/rss.xml",
+      "category": "overseas",
+      "lang": "en",
+      "weight": 1.0
+    },
+    {
+      "id": "bramus",
+      "name": "Bram.us",
+      "url": "https://www.bram.us/feed/",
+      "category": "overseas",
+      "lang": "en",
+      "weight": 1.0
+    },
+    {
+      "id": "ishadeed",
+      "name": "Ahmad Shadeed",
+      "url": "https://ishadeed.com/feed.xml",
+      "category": "overseas",
+      "lang": "en",
+      "weight": 1.0
+    },
+    {
+      "id": "hacks-mozilla",
+      "name": "Mozilla Hacks",
+      "url": "https://hacks.mozilla.org/feed/",
+      "category": "overseas",
+      "lang": "en",
+      "weight": 1.0
+    },
+    {
+      "id": "frontend-focus",
+      "name": "Frontend Focus",
+      "url": "https://frontendfoc.us/rss",
+      "category": "overseas",
+      "lang": "en",
+      "weight": 1.0
+    },
+    {
+      "id": "js-weekly",
+      "name": "JavaScript Weekly",
+      "url": "https://javascriptweekly.com/rss",
+      "category": "overseas",
+      "lang": "en",
+      "weight": 1.0
+    },
+
+    {
+      "id": "coliss",
+      "name": "コリス",
+      "url": "https://coliss.com/feed",
+      "category": "japan",
+      "lang": "ja",
+      "weight": 1.1,
+      "note": "@colisscom のX投稿はほぼこのフィードと同内容"
+    },
+    {
+      "id": "ics-media",
+      "name": "ICS MEDIA",
+      "url": "https://ics.media/feed/atom.xml",
+      "category": "japan",
+      "lang": "ja",
+      "weight": 1.2,
+      "note": "@icsweb / @tonkotsuboy_com の発信元"
+    },
+    {
+      "id": "zenn-frontend",
+      "name": "Zenn / frontend",
+      "url": "https://zenn.dev/topics/frontend/feed",
+      "category": "japan",
+      "lang": "ja",
+      "weight": 0.9
+    },
+    {
+      "id": "zenn-css",
+      "name": "Zenn / css",
+      "url": "https://zenn.dev/topics/css/feed",
+      "category": "japan",
+      "lang": "ja",
+      "weight": 0.9
+    },
+    {
+      "id": "zenn-javascript",
+      "name": "Zenn / javascript",
+      "url": "https://zenn.dev/topics/javascript/feed",
+      "category": "japan",
+      "lang": "ja",
+      "weight": 0.9
+    },
+    {
+      "id": "qiita-css",
+      "name": "Qiita / CSS",
+      "url": "https://qiita.com/tags/css/feed",
+      "category": "japan",
+      "lang": "ja",
+      "weight": 0.8
+    },
+    {
+      "id": "qiita-javascript",
+      "name": "Qiita / JavaScript",
+      "url": "https://qiita.com/tags/javascript/feed",
+      "category": "japan",
+      "lang": "ja",
+      "weight": 0.8
+    },
+    {
+      "id": "hatena-it",
+      "name": "はてブ テクノロジー",
+      "url": "https://b.hatena.ne.jp/hotentry/it.rss",
+      "category": "japan",
+      "lang": "ja",
+      "weight": 0.7,
+      "filter": "frontend"
+    },
+    {
+      "id": "tonkotsuboy",
+      "name": "池田泰延 (Zenn)",
+      "url": "https://zenn.dev/tonkotsuboy_com/feed",
+      "category": "japan",
+      "lang": "ja",
+      "weight": 1.2,
+      "note": "@tonkotsuboy_com 本人のZenn"
+    },
+    {
+      "id": "takdcxi",
+      "name": "TAKLOG (tak_dcxi)",
+      "url": "https://www.tak-dcxi.com/rss.xml",
+      "category": "japan",
+      "lang": "ja",
+      "weight": 1.2,
+      "note": "@tak_dcxi の個人ブログ。更新頻度は低め"
+    },
+
+    {
+      "id": "webkit",
+      "name": "WebKit",
+      "url": "https://webkit.org/feed/",
+      "category": "spec",
+      "lang": "en",
+      "weight": 1.1
+    },
+    {
+      "id": "chrome-releases",
+      "name": "Chrome Releases",
+      "url": "https://chromereleases.googleblog.com/atom.xml",
+      "category": "spec",
+      "lang": "en",
+      "weight": 0.9
+    },
+    {
+      "id": "w3c-news",
+      "name": "W3C News",
+      "url": "https://www.w3.org/blog/news/feed/",
+      "category": "spec",
+      "lang": "en",
+      "weight": 1.0
+    },
+    {
+      "id": "nodejs-blog",
+      "name": "Node.js Blog",
+      "url": "https://nodejs.org/en/feed/blog.xml",
+      "category": "spec",
+      "lang": "en",
+      "weight": 0.9
+    },
+    {
+      "id": "github-changelog",
+      "name": "GitHub Changelog",
+      "url": "https://github.blog/changelog/feed/",
+      "category": "spec",
+      "lang": "en",
+      "weight": 0.7
+    },
+    {
+      "id": "v8-blog",
+      "name": "V8 Blog",
+      "url": "https://v8.dev/blog.atom",
+      "category": "spec",
+      "lang": "en",
+      "weight": 0.9,
+      "note": "更新は不定期（現在停滞ぎみ）"
+    },
+    {
+      "id": "whatwg",
+      "name": "WHATWG Blog",
+      "url": "https://blog.whatwg.org/feed",
+      "category": "spec",
+      "lang": "en",
+      "weight": 1.0,
+      "note": "更新は不定期（現在停滞ぎみ）"
+    }
+  ]
+}

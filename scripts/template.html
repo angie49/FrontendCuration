@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Frontend Radar</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f7f9;
+    --surface: #ffffff;
+    --surface-2: #f0f2f5;
+    --border: #e0e3e8;
+    --text: #1b1f26;
+    --text-dim: #5d6570;
+    --text-faint: #8b939e;
+    --accent: #2f6df6;
+    --accent-soft: #e7efff;
+    --star: #e8a317;
+    --radius: 12px;
+    --maxw: 1180px;
+  }
+  :root[data-theme="dark"] {
+    --bg: #12141a;
+    --surface: #1a1d25;
+    --surface-2: #22262f;
+    --border: #2e333d;
+    --text: #e6e9ee;
+    --text-dim: #a4acb8;
+    --text-faint: #767e8b;
+    --accent: #6f9bff;
+    --accent-soft: #1e2a44;
+    --star: #f2b33d;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12141a;
+      --surface: #1a1d25;
+      --surface-2: #22262f;
+      --border: #2e333d;
+      --text: #e6e9ee;
+      --text-dim: #a4acb8;
+      --text-faint: #767e8b;
+      --accent: #6f9bff;
+      --accent-soft: #1e2a44;
+      --star: #f2b33d;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+
+  /* ---- header ---- */
+  header {
+    position: sticky; top: 0; z-index: 20;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .head-inner {
+    max-width: var(--maxw); margin: 0 auto;
+    padding: 12px 20px;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .brand { display: flex; align-items: baseline; gap: 10px; margin-right: auto; }
+  .brand h1 { font-size: 17px; margin: 0; letter-spacing: .02em; }
+  .brand .meta { font-size: 12px; color: var(--text-faint); }
+  .search {
+    flex: 1 1 240px; max-width: 380px; position: relative;
+  }
+  .search input {
+    width: 100%; padding: 8px 12px 8px 32px;
+    border: 1px solid var(--border); border-radius: 999px;
+    background: var(--surface-2); color: var(--text);
+    font: inherit; font-size: 14px;
+  }
+  .search input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .search::before {
+    content: "🔍"; position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+    font-size: 12px; opacity: .55; pointer-events: none;
+  }
+  .icon-btn {
+    border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
+    border-radius: 8px; padding: 6px 10px; font: inherit; font-size: 13px; cursor: pointer;
+  }
+  .icon-btn:hover { border-color: var(--accent); }
+
+  /* ---- layout ---- */
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 232px 1fr; gap: 24px; align-items: start; }
+  @media (max-width: 860px) { .wrap { grid-template-columns: 1fr; gap: 16px; } }
+
+  aside { position: sticky; top: 72px; }
+  @media (max-width: 860px) { aside { position: static; } }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 14px; }
+  .panel > summary {
+    font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--text-faint);
+    font-weight: 700; cursor: pointer; list-style: none; display: flex; align-items: center; gap: 6px;
+  }
+  .panel > summary::-webkit-details-marker { display: none; }
+  .panel > summary::before { content: "▸"; font-size: 10px; transition: transform .15s; }
+  .panel[open] > summary::before { transform: rotate(90deg); }
+  .panel > summary + * { margin-top: 10px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    border: 1px solid var(--border); background: var(--surface-2); color: var(--text-dim);
+    border-radius: 999px; padding: 4px 11px; font-size: 12.5px; cursor: pointer; font-family: inherit;
+    line-height: 1.5; transition: background .12s, color .12s, border-color .12s;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--text); }
+  .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .chip .n { opacity: .6; font-size: 11px; margin-left: 4px; }
+  .chip[aria-pressed="true"] .n { opacity: .8; }
+
+  .srclist { display: flex; flex-direction: column; gap: 2px; max-height: 320px; overflow-y: auto; margin: 0 -4px; padding: 0 4px; }
+  .srclist button {
+    display: flex; justify-content: space-between; gap: 8px; align-items: center;
+    width: 100%; text-align: left; border: 0; background: transparent; color: var(--text-dim);
+    font: inherit; font-size: 13px; padding: 4px 7px; border-radius: 6px; cursor: pointer;
+  }
+  .srclist button:hover { background: var(--surface-2); color: var(--text); }
+  .srclist button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+  .srclist .n { font-size: 11px; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+
+  .switches { display: flex; flex-direction: column; gap: 8px; }
+  .switch { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-dim); cursor: pointer; }
+  .switch input { accent-color: var(--accent); width: 15px; height: 15px; }
+
+  /* ---- toolbar ---- */
+  .toolbar {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    margin-bottom: 14px; font-size: 13px; color: var(--text-dim);
+  }
+  .toolbar select {
+    border: 1px solid var(--border); background: var(--surface); color: var(--text);
+    border-radius: 8px; padding: 5px 8px; font: inherit; font-size: 13px;
+  }
+  .count { margin-right: auto; font-variant-numeric: tabular-nums; }
+  .count b { color: var(--text); }
+
+  /* ---- items ---- */
+  .items { display: flex; flex-direction: column; gap: 10px; }
+  .item {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 14px 16px; display: grid; grid-template-columns: 1fr auto; gap: 4px 12px;
+    transition: border-color .12s;
+  }
+  .item:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
+  .item.read { opacity: .5; }
+  .item.read:hover { opacity: .85; }
+  .item .line1 { grid-column: 1; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 11.5px; color: var(--text-faint); }
+  .badge {
+    display: inline-block; padding: 1px 7px; border-radius: 5px; font-size: 11px; font-weight: 700;
+    background: var(--surface-2); color: var(--text-dim); border: 1px solid var(--border);
+  }
+  .badge.cat-overseas { color: #b06a00; border-color: color-mix(in srgb, #b06a00 35%, var(--border)); }
+  .badge.cat-japan    { color: #1f8a5c; border-color: color-mix(in srgb, #1f8a5c 35%, var(--border)); }
+  .badge.cat-spec     { color: #7a52d6; border-color: color-mix(in srgb, #7a52d6 40%, var(--border)); }
+  :root[data-theme="dark"] .badge.cat-overseas { color: #e5a04a; }
+  :root[data-theme="dark"] .badge.cat-japan    { color: #55c894; }
+  :root[data-theme="dark"] .badge.cat-spec     { color: #ab8cf0; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .badge.cat-overseas { color: #e5a04a; }
+    :root:not([data-theme="light"]) .badge.cat-japan    { color: #55c894; }
+    :root:not([data-theme="light"]) .badge.cat-spec     { color: #ab8cf0; }
+  }
+  .score { font-weight: 700; letter-spacing: -1px; color: var(--star); }
+  .item h3 { grid-column: 1; margin: 2px 0 0; font-size: 15.5px; line-height: 1.5; font-weight: 700; }
+  .item h3 a { text-decoration: none; }
+  .item h3 a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  .item p { grid-column: 1; margin: 4px 0 0; font-size: 13.5px; color: var(--text-dim); }
+  .item p.ai::before { content: "要約"; font-size: 10px; font-weight: 700; color: var(--accent); border: 1px solid currentColor; border-radius: 4px; padding: 0 4px; margin-right: 6px; vertical-align: 1px; }
+  .item .tags { grid-column: 1; display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+  .tag { font-size: 11px; color: var(--text-faint); background: var(--surface-2); border-radius: 4px; padding: 1px 6px; cursor: pointer; }
+  .tag:hover { color: var(--accent); }
+  .actions { grid-column: 2; grid-row: 1 / span 2; display: flex; flex-direction: column; gap: 4px; }
+  .act { border: 0; background: transparent; color: var(--text-dim); cursor: pointer; font-size: 16px; padding: 3px 5px; border-radius: 6px; opacity: .5; line-height: 1; }
+  .act:hover { opacity: 1; background: var(--surface-2); }
+  .act[aria-pressed="true"] { opacity: 1; }
+  .act.star[aria-pressed="true"] { color: var(--star); }
+
+  .empty { text-align: center; padding: 60px 20px; color: var(--text-faint); }
+  footer { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 48px; font-size: 12px; color: var(--text-faint); }
+  footer a { color: var(--accent); }
+  .kbd { font-family: ui-monospace, Menlo, monospace; font-size: 11px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="head-inner">
+    <div class="brand">
+      <h1>Frontend Radar</h1>
+      <span class="meta" id="meta"></span>
+    </div>
+    <div class="search">
+      <input type="search" id="q" placeholder="タイトル・要約を検索（/ でフォーカス）" autocomplete="off">
+    </div>
+    <button class="icon-btn" id="theme" title="テーマ切り替え">◐</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <aside>
+    <details class="panel" open>
+      <summary>カテゴリ</summary>
+      <div class="chips" id="cats"></div>
+    </details>
+    <details class="panel" open>
+      <summary>タグ</summary>
+      <div class="chips" id="tags"></div>
+    </details>
+    <details class="panel" open>
+      <summary>ソース</summary>
+      <div class="srclist" id="sources"></div>
+    </details>
+    <details class="panel" open>
+      <summary>表示</summary>
+      <div class="switches">
+        <label class="switch"><input type="checkbox" id="unreadOnly"> 未読のみ</label>
+        <label class="switch"><input type="checkbox" id="starOnly"> ★ あとで読む のみ</label>
+      </div>
+    </details>
+  </aside>
+
+  <main>
+    <div class="toolbar">
+      <span class="count" id="count"></span>
+      <label>期間
+        <select id="period">
+          <option value="7">7日</option>
+          <option value="30" selected>30日</option>
+          <option value="90">90日</option>
+          <option value="0">全部</option>
+        </select>
+      </label>
+      <label>並び
+        <select id="sort">
+          <option value="date">新着順</option>
+          <option value="score">重要度順</option>
+        </select>
+      </label>
+      <button class="icon-btn" id="markAll">表示中を既読に</button>
+    </div>
+    <div class="items" id="items"></div>
+  </main>
+</div>
+
+<footer>
+  <p>ソース定義は <code>sources.json</code>、収集は GitHub Actions が毎日実行しています。★と既読はこのブラウザにのみ保存されます。
+  ショートカット: <span class="kbd">/</span> 検索　<span class="kbd">j</span>/<span class="kbd">k</span> 移動　<span class="kbd">o</span> 開く　<span class="kbd">m</span> 既読　<span class="kbd">s</span> ★</p>
+</footer>
+
+<script id="radar-data" type="application/json">__DATA__</script>
+<script>
+(function () {
+  'use strict';
+
+  var DATA = JSON.parse(document.getElementById('radar-data').textContent);
+  var ITEMS = DATA.items || [];
+  var META = DATA.meta || {};
+
+  /* ---- 保存領域（localStorage が使えない環境ではメモリにフォールバック） ---- */
+  var mem = {};
+  var store = {
+    get: function (k, fallback) {
+      try {
+        var v = window.localStorage.getItem(k);
+        return v === null ? fallback : JSON.parse(v);
+      } catch (e) { return k in mem ? mem[k] : fallback; }
+    },
+    set: function (k, v) {
+      mem[k] = v;
+      try { window.localStorage.setItem(k, JSON.stringify(v)); } catch (e) {}
+    }
+  };
+
+  var read = store.get('fr.read', {});
+  var stars = store.get('fr.star', {});
+
+  /* ---- テーマ ---- */
+  var themeBtn = document.getElementById('theme');
+  var saved = store.get('fr.theme', null);
+  if (saved) document.documentElement.setAttribute('data-theme', saved);
+  themeBtn.addEventListener('click', function () {
+    var cur = document.documentElement.getAttribute('data-theme');
+    var dark = cur ? cur === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var next = dark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    store.set('fr.theme', next);
+  });
+
+  /* ---- 状態 ---- */
+  var state = {
+    q: '',
+    cat: 'all',
+    tags: [],
+    sources: [],
+    period: 30,
+    sort: 'date',
+    unreadOnly: false,
+    starOnly: false
+  };
+
+  var CAT_LABEL = { overseas: '海外', japan: '日本語', spec: '仕様・リリース' };
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function fmtDate(iso) {
+    if (!iso) return '';
+    var d = new Date(iso);
+    if (isNaN(d)) return '';
+    var now = new Date();
+    var diff = Math.floor((now - d) / 86400000);
+    if (diff <= 0) return '今日';
+    if (diff === 1) return '昨日';
+    if (diff < 7) return diff + '日前';
+    return (d.getMonth() + 1) + '/' + d.getDate() + (d.getFullYear() !== now.getFullYear() ? '/' + String(d.getFullYear()).slice(2) : '');
+  }
+
+  /* ---- 絞り込み ---- */
+  function passesExceptSelf(item, skip) {
+    if (skip !== 'cat' && state.cat !== 'all' && item.category !== state.cat) return false;
+    if (skip !== 'source' && state.sources.length && state.sources.indexOf(item.sourceId) < 0) return false;
+    if (skip !== 'tag' && state.tags.length) {
+      var t = item.tags || [];
+      for (var i = 0; i < state.tags.length; i++) if (t.indexOf(state.tags[i]) < 0) return false;
+    }
+    if (state.period > 0) {
+      if (!item.publishedAt) return false;
+      if ((Date.now() - new Date(item.publishedAt).getTime()) > state.period * 86400000) return false;
+    }
+    if (state.unreadOnly && read[item.id]) return false;
+    if (state.starOnly && !stars[item.id]) return false;
+    if (state.q) {
+      var hay = (item.title + ' ' + (item.summary || '') + ' ' + (item.excerpt || '') + ' ' + item.sourceName).toLowerCase();
+      var terms = state.q.toLowerCase().split(/\s+/).filter(Boolean);
+      for (var j = 0; j < terms.length; j++) if (hay.indexOf(terms[j]) < 0) return false;
+    }
+    return true;
+  }
+
+  function filtered() { return ITEMS.filter(function (it) { return passesExceptSelf(it, null); }); }
+
+  function sortItems(list) {
+    var copy = list.slice();
+    if (state.sort === 'score') {
+      copy.sort(function (a, b) {
+        var sa = (a.score || 2.5) * (a.weight || 1);
+        var sb = (b.score || 2.5) * (b.weight || 1);
+        if (sb !== sa) return sb - sa;
+        return new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0);
+      });
+    } else {
+      copy.sort(function (a, b) { return new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0); });
+    }
+    return copy;
+  }
+
+  /* ---- 描画 ---- */
+  var elItems = document.getElementById('items');
+  var elCount = document.getElementById('count');
+  var cursor = -1;
+
+  function renderFacets() {
+    var cats = document.getElementById('cats');
+    var order = ['all', 'overseas', 'japan', 'spec'];
+    cats.innerHTML = order.map(function (c) {
+      var n = c === 'all'
+        ? ITEMS.filter(function (i) { return passesExceptSelf(i, 'cat'); }).length
+        : ITEMS.filter(function (i) { return i.category === c && passesExceptSelf(i, 'cat'); }).length;
+      var label = c === 'all' ? 'すべて' : CAT_LABEL[c];
+      return '<button class="chip" data-cat="' + c + '" aria-pressed="' + (state.cat === c) + '">' + label + '<span class="n">' + n + '</span></button>';
+    }).join('');
+
+    var tagCounts = {};
+    ITEMS.forEach(function (i) {
+      if (!passesExceptSelf(i, 'tag')) return;
+      (i.tags || []).forEach(function (t) { tagCounts[t] = (tagCounts[t] || 0) + 1; });
+    });
+    var tagNames = Object.keys(tagCounts).sort(function (a, b) { return tagCounts[b] - tagCounts[a]; });
+    document.getElementById('tags').innerHTML = tagNames.map(function (t) {
+      return '<button class="chip" data-tag="' + esc(t) + '" aria-pressed="' + (state.tags.indexOf(t) >= 0) + '">' + esc(t) + '<span class="n">' + tagCounts[t] + '</span></button>';
+    }).join('') || '<span style="font-size:12px;color:var(--text-faint)">該当なし</span>';
+
+    var srcCounts = {};
+    ITEMS.forEach(function (i) {
+      if (!passesExceptSelf(i, 'source')) return;
+      srcCounts[i.sourceId] = srcCounts[i.sourceId] || { name: i.sourceName, n: 0 };
+      srcCounts[i.sourceId].n++;
+    });
+    var srcIds = Object.keys(srcCounts).sort(function (a, b) { return srcCounts[b].n - srcCounts[a].n; });
+    document.getElementById('sources').innerHTML = srcIds.map(function (id) {
+      return '<button data-source="' + esc(id) + '" aria-pressed="' + (state.sources.indexOf(id) >= 0) + '">' +
+        '<span>' + esc(srcCounts[id].name) + '</span><span class="n">' + srcCounts[id].n + '</span></button>';
+    }).join('') || '<span style="font-size:12px;color:var(--text-faint)">該当なし</span>';
+  }
+
+  function renderItems() {
+    var list = sortItems(filtered());
+    elCount.innerHTML = '<b>' + list.length + '</b> 件表示中 / 全 ' + ITEMS.length + ' 件';
+
+    if (!list.length) {
+      elItems.innerHTML = '<div class="empty">条件に合う記事がありません。<br>期間やフィルタを緩めてみてください。</div>';
+      return;
+    }
+
+    elItems.innerHTML = list.map(function (it, idx) {
+      var isRead = !!read[it.id];
+      var isStar = !!stars[it.id];
+      var score = it.score ? '<span class="score" title="実務での重要度 ' + it.score + '/5">' + '●'.repeat(it.score) + '</span>' : '';
+      var body = it.summary
+        ? '<p class="ai">' + esc(it.summary) + '</p>'
+        : (it.excerpt ? '<p>' + esc(it.excerpt) + '</p>' : '');
+      var tags = (it.tags || []).map(function (t) { return '<span class="tag" data-tag="' + esc(t) + '">#' + esc(t) + '</span>'; }).join('');
+      return '<article class="item' + (isRead ? ' read' : '') + '" data-id="' + esc(it.id) + '" data-idx="' + idx + '">' +
+        '<div class="line1">' +
+          '<span class="badge cat-' + it.category + '">' + esc(it.sourceName) + '</span>' +
+          '<span>' + fmtDate(it.publishedAt) + '</span>' + score +
+        '</div>' +
+        '<h3><a href="' + esc(it.url) + '" target="_blank" rel="noopener noreferrer">' + esc(it.title) + '</a></h3>' +
+        body +
+        (tags ? '<div class="tags">' + tags + '</div>' : '') +
+        '<div class="actions">' +
+          '<button class="act star" data-act="star" aria-pressed="' + isStar + '" title="あとで読む">' + (isStar ? '★' : '☆') + '</button>' +
+          '<button class="act" data-act="read" aria-pressed="' + isRead + '" title="既読/未読">' + (isRead ? '✓' : '○') + '</button>' +
+        '</div>' +
+      '</article>';
+    }).join('');
+  }
+
+  function render() { renderFacets(); renderItems(); }
+
+  /* ---- イベント ---- */
+  document.getElementById('cats').addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-cat]'); if (!btn) return;
+    state.cat = btn.dataset.cat; render();
+  });
+  document.getElementById('tags').addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-tag]'); if (!btn) return;
+    toggleTag(btn.dataset.tag);
+  });
+  document.getElementById('sources').addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-source]'); if (!btn) return;
+    var id = btn.dataset.source, i = state.sources.indexOf(id);
+    if (i >= 0) state.sources.splice(i, 1); else state.sources.push(id);
+    render();
+  });
+  function toggleTag(t) {
+    var i = state.tags.indexOf(t);
+    if (i >= 0) state.tags.splice(i, 1); else state.tags.push(t);
+    render();
+  }
+
+  elItems.addEventListener('click', function (e) {
+    var tagEl = e.target.closest('.tag');
+    if (tagEl) { toggleTag(tagEl.dataset.tag); return; }
+    var act = e.target.closest('[data-act]');
+    var art = e.target.closest('.item');
+    if (!art) return;
+    var id = art.dataset.id;
+    if (act) {
+      if (act.dataset.act === 'star') { stars[id] = !stars[id]; store.set('fr.star', stars); }
+      else { read[id] = !read[id]; store.set('fr.read', read); }
+      renderItems();
+      return;
+    }
+    if (e.target.closest('a')) { read[id] = true; store.set('fr.read', read); renderItems(); }
+  });
+
+  var qEl = document.getElementById('q');
+  var qTimer;
+  qEl.addEventListener('input', function () {
+    clearTimeout(qTimer);
+    qTimer = setTimeout(function () { state.q = qEl.value.trim(); render(); }, 140);
+  });
+  document.getElementById('period').addEventListener('change', function (e) { state.period = Number(e.target.value); render(); });
+  document.getElementById('sort').addEventListener('change', function (e) { state.sort = e.target.value; renderItems(); });
+  document.getElementById('unreadOnly').addEventListener('change', function (e) { state.unreadOnly = e.target.checked; render(); });
+  document.getElementById('starOnly').addEventListener('change', function (e) { state.starOnly = e.target.checked; render(); });
+  document.getElementById('markAll').addEventListener('click', function () {
+    filtered().forEach(function (it) { read[it.id] = true; });
+    store.set('fr.read', read); render();
+  });
+
+  /* ---- キーボード ---- */
+  function focusCard(idx) {
+    var cards = elItems.querySelectorAll('.item');
+    if (!cards.length) return;
+    cursor = Math.max(0, Math.min(cards.length - 1, idx));
+    cards.forEach(function (c) { c.style.outline = ''; });
+    var el = cards[cursor];
+    el.style.outline = '2px solid var(--accent)';
+    el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
+      if (e.key === 'Escape') e.target.blur();
+      return;
+    }
+    if (e.key === '/') { e.preventDefault(); qEl.focus(); qEl.select(); return; }
+    if (e.key === 'j') { e.preventDefault(); focusCard(cursor + 1); return; }
+    if (e.key === 'k') { e.preventDefault(); focusCard(cursor - 1); return; }
+    var cards = elItems.querySelectorAll('.item');
+    var cur = cards[cursor];
+    if (!cur) return;
+    var id = cur.dataset.id;
+    if (e.key === 'o' || e.key === 'Enter') {
+      var a = cur.querySelector('h3 a');
+      if (a) { window.open(a.href, '_blank', 'noopener'); read[id] = true; store.set('fr.read', read); renderItems(); focusCard(cursor); }
+    } else if (e.key === 'm') {
+      read[id] = !read[id]; store.set('fr.read', read); renderItems(); focusCard(cursor);
+    } else if (e.key === 's') {
+      stars[id] = !stars[id]; store.set('fr.star', stars); renderItems(); focusCard(cursor);
+    }
+  });
+
+  /* ---- 起動 ---- */
+  // 狭い画面では絞り込みパネルを畳んでおき、記事がすぐ見えるようにする
+  if (window.matchMedia('(max-width: 860px)').matches) {
+    Array.prototype.forEach.call(document.querySelectorAll('aside .panel'), function (d, i) {
+      if (i > 0) d.removeAttribute('open');
+    });
+  }
+
+  document.getElementById('meta').textContent =
+    '最終更新 ' + (META.generatedAt ? new Date(META.generatedAt).toLocaleString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-') +
+    ' ・ ' + (META.sourceCount || 0) + ' ソース';
+  render();
+})();
+</script>
+</body>
+</html>
