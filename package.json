@@ -1,0 +1,17 @@
+{
+  "name": "frontend-radar",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "フロントエンド（HTML/CSS/JS）の最新情報を毎日集めて1ページで読むための個人用キュレーションシステム",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "serve": "node --run build && npx --yes serve site"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^4.5.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
